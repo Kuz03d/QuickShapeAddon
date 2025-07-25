@@ -2,7 +2,7 @@ bl_info = {
     "name": "QuickShape Spawner",
     "author": "Kuzo3D",
     "version": (1, 0),
-    "blender": (4, 5, 0),  
+    "blender": (3, 0, 0),  
     "location": "View3D > Sidebar > ShapeSpawner Tab",
     "warning": "fear the allmighty cube",
     "wiki_url": "https://github.com/Kuz03d/QuickShapeAddon",
@@ -21,7 +21,7 @@ class VIEW3D_PT_shape_spawner_main(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         layout.scale_y=1.6
-        layout.label(text="Choose a shape below:")
+        layout.label(text="Choose an action below:")
 
 class VIEW3D_PT_shape_spawner_cube(bpy.types.Panel):
     bl_label = "Cube"
