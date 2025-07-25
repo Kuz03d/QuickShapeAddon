@@ -13,7 +13,7 @@ QuickShape Spawner is a lightweight Blender addon designed to speed up your mode
 
 Spawn shapes like cubes, cylinders, spheres, cones, planes, tori, and more with a single click. Also includes quick shading operations and transform property controls.
 
-<img width="245" height="302" alt="image" src="https://github.com/user-attachments/assets/4623d3af-68c2-4ba3-9426-a735d36f8058" />
+<img width="238" height="277" alt="image" src="https://github.com/user-attachments/assets/07fdd3d9-fd6d-4a0f-a428-e42fbcf74f23" />
 
 ---
 
