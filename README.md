@@ -1,7 +1,7 @@
 # QuickShape Spawner
 
 **Author:** Kuzo3D  
-**Blender Version:** 4.5.0+  
+**Blender Version:** 3.0.0+  
 **Category:** Add Mesh  
 **License:** MIT License
 
