@@ -21,11 +21,12 @@ Spawn shapes like cubes, cylinders, spheres, cones, planes, tori, and more with 
 
 - Add basic primitives (Cube, Cylinder, UV Sphere, Cone, Plane, Torus, IcoSphere)  
 - Special operations panel for shading: smooth, flat, auto smooth  
-- Transform controls for the selected object (location, scale, rotation)  
-- One-click delete all objects in the scene  
-- Easy to access in the 3D View sidebar under the **ShapeSpawner** tab  
+- Transform controls for the selected object (location, scale, rotation, color)  
+- One-click delete,select,invert selection on  all objects in the scene  
+- Easy to access in the 3D View sidebar under the **ShapeSpawner** tab
+  
 
-<img width="239" height="276" alt="image" src="https://github.com/user-attachments/assets/a0ee9a0e-46ab-43e1-b988-aaabaccf883c" />
+<img width="205" height="337" alt="image" src="https://github.com/user-attachments/assets/1c850a48-efc8-4cb2-b1d8-39f07521131c" />
 
 ---
 
