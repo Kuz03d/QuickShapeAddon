@@ -61,7 +61,7 @@ class VIEW3D_PT_shape_spawner_others(bpy.types.Panel):
         row.operator("mesh.primitive_plane_add", text="Plane",icon='MESH_PLANE')
         row.operator("mesh.primitive_torus_add", text="Torus",icon='MESH_TORUS')
         layout.operator("mesh.primitive_ico_sphere_add", text="IcoSphere", icon='MESH_ICOSPHERE')
-
+        
 class OBJECT_OT_select(bpy.types.Operator):
     bl_idname="object.select"
     bl_label = "Select All Objects"
@@ -70,8 +70,17 @@ class OBJECT_OT_select(bpy.types.Operator):
     
     def execute(self, context):
         bpy.ops.object.select_all(action="SELECT")
-        return{'FINISHED'}  
-
+        return{'FINISHED'} 
+     
+class OBJECT_OT_invert_select(bpy.types.Operator):
+    bl_idname="object.invert_select"
+    bl_label = "Invert Selection"
+    bl_description="Inverts selection of the objects"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        bpy.ops.object.select_all(action='INVERT')
+        return{'FINISHED'} 
 
 class OBJECT_OT_delete_selected(bpy.types.Operator):
     bl_idname="object.delete_selected_objects"
@@ -82,7 +91,20 @@ class OBJECT_OT_delete_selected(bpy.types.Operator):
     def execute(self, context):
         bpy.ops.object.delete()
         return{'FINISHED'}     
-    
+class OBJECT_OT_assign_auto_material(bpy.types.Operator):
+    bl_idname = "object.assign_auto_material"
+    bl_label = "Assign Auto Material"
+    bl_description = "Assigns a basic Principled BSDF material if none exists"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        obj = context.object
+        if obj and obj.type == "MESH":
+            if not obj.active_material:
+                mat = bpy.data.materials.new(name="AutoMaterial")
+                mat.use_nodes = True
+                obj.active_material = mat
+        return {'FINISHED'}    
        
 class OBJECT_OT_delete_all(bpy.types.Operator):
     bl_idname="object.delete_all_objects"
@@ -109,36 +131,59 @@ class VIEW3D_PT_shape_spawner_shade(bpy.types.Panel):
         layout = self.layout
         row=layout.row()
         layout.scale_y=0.7
-        row.operator("object.shade_smooth")
-        row.operator("object.shade_flat")
-        row=layout.row()
-        row.operator("object.shade_auto_smooth")
         obj=context.object
-        mode=bpy.context.mode
-        row=layout.row()
-        
-        if obj and obj.type=="MESH":
-            mesh=obj.data
-            layout.label(text=f"Selected Mesh: {obj.name}")
+        if obj and bpy.context.selected_objects and obj.type=="MESH":
+            row.operator("object.shade_smooth",icon="SHADING_SOLID")
+            row.operator("object.shade_flat",icon="SHADING_SOLID")
+            row=layout.row()
+            row.operator("object.shade_auto_smooth",icon="SHADING_SOLID")
+            mode=bpy.context.mode
+            row=layout.row()
+            mesh=obj.data        
+            selected = context.selected_objects
+            if selected:
+                for obj in selected:
+                    layout.label(text=f"Selected: {obj.name}")
+            row=layout.row()
             col=layout.column()
             col.prop(context.object,"location")
             col.prop(context.object,"scale")
             col.prop(context.object,"rotation_euler",text="Rotation")
-
-        else:
-            layout.label(text="No objects selected")
-        if mode =="OBJECT":
-            layout.operator("object.select")
-            layout.operator("object.delete_selected_objects",icon="TRASH")
-            layout.operator("object.delete_all_objects", icon='TRASH')
-        
             
+            col.separator()
+            col.label(text="Material:")
+            if obj.active_material:
+                mat = obj.active_material
+                if mat.use_nodes and mat.node_tree:
+                    nodes = mat.node_tree.nodes
+                    bsdf = next((n for n in nodes if n.type == 'BSDF_PRINCIPLED'), None)
+                    if bsdf:
+                        col.prop(bsdf.inputs["Base Color"], "default_value", text="Base Color")
+                    else:
+                        col.label(text="No BSDF node")
+                else:
+                    col.prop(mat, "diffuse_color", text="Diffuse Color")
+            else:
+                layout.label(text="No material assigned")
+                layout.operator("object.assign_auto_material", icon='MATERIAL')
+        else:
+            layout.label(text="No Object Selected")
+
+
+        layout.operator("OBJECT_OT_invert_select",icon="UV_SYNC_SELECT")
+        layout.operator("object.select",icon="SELECT_EXTEND")
+        layout.operator("object.delete_selected_objects",icon="TRASH")
+        layout.operator("object.delete_all_objects", icon='ERROR')
+                        
+
 
 
 classes = (
     OBJECT_OT_select,
+    OBJECT_OT_invert_select,
     OBJECT_OT_delete_all,
     OBJECT_OT_delete_selected,
+    OBJECT_OT_assign_auto_material, 
     VIEW3D_PT_shape_spawner_main,
     VIEW3D_PT_shape_spawner_cube,
     VIEW3D_PT_shape_spawner_others,
